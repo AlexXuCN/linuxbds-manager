@@ -41,3 +41,8 @@ then
     fi
 fi
 }
+
+getver(){
+curl -O https://cdn.jsdelivr.net/gh/AlexXuCN/linuxbds-manager@master/ver.list
+mv ver.list /tmp/ver.txt
+}

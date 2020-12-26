@@ -3,16 +3,28 @@
 # Minecraft Bedrock Server version manager for Linux.
 # By AlexXuCN
 
-echo BDSM v0.1
-echo 'By AlexXuCN'
-
 # function
+
+bdsmhelp(){
+echo "BDSM - BDS Version manager for Linux"
+echo "version 0.1"
+echo "By AlexXuCN"
+echo "Usage:"
+echo "bdsm [Option]"
+echo "Options:"
+echo " install [version] - Install a BDS version available"
+echo " listver - List available versions"
+echo " help - Display this help"
+echo " update [old_version] [new_version] - Move Worlds,Config,Whitelist,OPs to New version(install it first!!!)
+}
+
 
 readconf(){
 if test -e ~/.bdsm/bdsm.conf
 then
     source ~/.bdsm/bdsm.conf
 else
+    echo "Seemed it's the first time you run BDSM.Let's do some configuration."
     touch ~/.bdsm/bdsm.conf
     echo 'BDSDIR=0' >> ~/.bdsm/bdsm.conf
     echo 'LANG=0' >> ~/.bdsm/bdsm.conf
@@ -103,4 +115,19 @@ else
 fi
 }
 
-
+main(){
+readconf
+if [ $# == 0 ]
+then
+    bdsmhelp
+else
+    if [ $1 == "debug" ]
+    then
+        $1
+    elif [ $1 == "help" ]
+    then
+        bdsmhelp
+    elif [ $1 == "install" ]
+    then
+        
+}

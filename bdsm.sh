@@ -22,8 +22,10 @@ fi
 if [ $LANG == '0' ]
 then
     if [ $TMP == 'EN' ]
+    then
         LANG="EN"
     elif [ $TMP == 'CN' ]
+    then
         LANG="CN"
     else
         LANG="EN"
@@ -35,7 +37,7 @@ then
     read -p "Where do you want to install BDS?(default=~/bds/)" TMP
     if [ $TMP == '' ]
     then
-        BDSDIR=~/bds/
+        BDSDIR=~/bds
     else
         BDSDIR=$TMP
     fi
@@ -44,5 +46,61 @@ fi
 
 getver(){
 curl -O https://cdn.jsdelivr.net/gh/AlexXuCN/linuxbds-manager@master/ver.list
-mv ver.list /tmp/ver.txt
+mv ver.list $BDSDIR/ver.txt
 }
+
+listver(){
+if test -e $BDSDIR/ver.txt
+then
+    echo "There are versions available:"
+    cat $BDSDIR/ver.txt
+else
+getver
+fi
+}
+
+installbds(){
+curl -O "https://minecraft.azureedge.net/bin-linux/bedrock-server-${INSTALLVER}.zip"
+if test -e bedrock-server-${INSTALLVER}.zip
+then
+    unzip bedrock-server-${INSTALLVER}.zip
+else
+    echo "Download Failed.Try again？(Y/n,default=y)"
+    read -p '>' TMP
+    if [ $TMP == "Y" ]
+    then
+        installbds
+    elif [ $TMP == "y" ]
+    then
+        installbds
+    elif [ $TMP == "N" ]
+    then
+        echo "Install Cancelled."
+        INSTALLVER=c
+    elif [ $TMP == "n" ]
+    then
+        echo "Install Cancelled."
+        INSTALLVER=c
+    else
+        installbds
+    fi
+fi
+}
+
+setupbds(){
+grep -x $INSTALLVER $BDSDIR/ver.txt > $BDSDIR/.install.tmp.txt
+INSTALLVER=< $BDSDIR/.install.tmp.txt
+rm -r $BDSDIR/.install.txt
+cd $BDSDIR
+if test -d $INSTALLVER
+then
+    cd $INSTALLVER
+    installbds
+else
+    mkdir $INSTALLVER
+    cd $INSTALLVER
+    installbds
+fi
+}
+
+

@@ -15,7 +15,9 @@ echo "Options:"
 echo " install [version] - Install a BDS version available"
 echo " listver - List available versions"
 echo " help - Display this help"
-echo " update [old_version] [new_version] - Move Worlds,Config,Whitelist,OPs to New version(install it first!!!)
+echo " update [old_version] [new_version] - Move Worlds,Config,Whitelist,OPs to New version(install it first!!!)"
+echo " script [version] [path_to_script]"
+
 }
 
 
@@ -57,6 +59,10 @@ fi
 }
 
 getver(){
+if test -e $BDSDIR/ver.txt
+then
+    rm -r $BDSDIR/ver.txt
+fi
 curl -O https://cdn.jsdelivr.net/gh/AlexXuCN/linuxbds-manager@master/ver.list
 mv ver.list $BDSDIR/ver.txt
 }
@@ -64,6 +70,7 @@ mv ver.list $BDSDIR/ver.txt
 listver(){
 if test -e $BDSDIR/ver.txt
 then
+    getver
     echo "There are versions available:"
     cat $BDSDIR/ver.txt
 else
@@ -100,9 +107,7 @@ fi
 }
 
 setupbds(){
-grep -x $INSTALLVER $BDSDIR/ver.txt > $BDSDIR/.install.tmp.txt
-INSTALLVER=< $BDSDIR/.install.tmp.txt
-rm -r $BDSDIR/.install.txt
+INSTALLVER=`grep -x $INSTALLVER $BDSDIR/ver.txt`
 cd $BDSDIR
 if test -d $INSTALLVER
 then
@@ -129,5 +134,27 @@ else
         bdsmhelp
     elif [ $1 == "install" ]
     then
-        
+        if [ $# == 2 ]
+        then
+            INSTALLVER=$2
+            setupbds
+        else
+            echo "Usage:bdsm install [version]"
+            echo "version undefined"
+        fi
+    elif [ $1 == "listver" ]
+    then
+        listver
+    elif [ $1 == "update" ]
+    then
+        update
+    elif [ $1 == "script" ]
+    then
+        scriptc
+    fi
+else
+    echo "undefined action $1"
+    echo "Help:"
+    bdsmhelp
+fi
 }

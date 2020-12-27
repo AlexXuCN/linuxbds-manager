@@ -17,7 +17,9 @@ echo " listver - List available versions"
 echo " help - Display this help"
 echo " update [old_version] [new_version] - Move Worlds,Config,Whitelist,OPs to New version(install it first!!!)"
 echo " script [version] [path_to_script]"
-
+echo "PS:"
+echo "[version] should be list in (listver)"
+echo "[path_to_script] should be a file path like ~/BDS.sh"
 }
 
 
@@ -120,7 +122,29 @@ else
 fi
 }
 
-main(){
+scriptc(){
+echo "echo Starting..." > $TMP
+echo "cd ${BDSDIR}/${INSTALLVER}" >> $TMP
+echo 'LD_LIBRARY_PATH=. ./bedrock_server' >> $TMP
+chmod +x ${TMP}
+echo "Done.Start the server: ${TMP}."
+}
+
+update(){
+cd ${BDSDIR}/${INSTALLVER}
+rm -rf worlds
+rm -rf whitelist.json
+rm -rf permissions.json
+rm -rf premium_cache
+rm -rf server.properties
+cp -d ${BDSDIR}/${TMP}/worlds .
+cp ${BDSDIR}/${TMP}/whitelist.json .
+cp ${BDSDIR}/${TMP}/permissions.json .
+cp ${BDSDIR}/${TMP}/server.properties .
+echo Done.
+}
+
+# main
 readconf
 if [ $# == 0 ]
 then
@@ -147,9 +171,13 @@ else
         listver
     elif [ $1 == "update" ]
     then
+        TMP=$1
+        INSTALLVER=$2
         update
     elif [ $1 == "script" ]
     then
+        INSTALLVER=$1
+        TMP=$2
         scriptc
     fi
 else
@@ -157,4 +185,4 @@ else
     echo "Help:"
     bdsmhelp
 fi
-}
+

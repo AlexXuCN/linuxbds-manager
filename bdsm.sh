@@ -29,7 +29,6 @@ then
     source ~/.bdsm/bdsm.conf
 else
     echo "Seemed it's the first time you run BDSM.Let's do some configuration."
-    touch ~/.bdsm/bdsm.conf
     echo 'BDSDIR=0' >> ~/.bdsm/bdsm.conf
     echo 'LANG=0' >> ~/.bdsm/bdsm.conf
     read -p "Choose your language:(CN/EN,default=EN)" TMP
@@ -43,6 +42,8 @@ then
     elif [ $TMP == 'CN' ]
     then
         LANG="CN"
+    elif [ $TMP ]
+        LANG="EN"
     else
         LANG="EN"
     fi
@@ -51,7 +52,7 @@ fi
 if [ $BDSDIR == 0 ]
 then
     read -p "Where do you want to install BDS?(default=~/bds/)" TMP
-    if [ $TMP == '' ]
+    if [ $TMP ]
     then
         BDSDIR=~/bds
     else
